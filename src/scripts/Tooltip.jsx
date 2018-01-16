@@ -483,8 +483,11 @@ export default class JoyrideTooltip extends React.Component {
       styles.buttons.close.opacity = 0;
     }
 
+    const { casecStyle, casecClass } = this.props.step;
+    if (casecClass) opts.classes.push(casecClass);
+
     output.tooltipComponent = (
-      <div className={opts.classes.join(' ')} style={styles.tooltip} data-target={selector}>
+      <div className={opts.classes.join(' ')} style={Object.assign(styles.tooltip, casecStyle)} data-target={selector}>
         <div
           className={`joyride-tooltip__triangle joyride-tooltip__triangle-${opts.positionClass}`}
           style={styles.arrow} />
