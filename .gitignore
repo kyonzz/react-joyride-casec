@@ -1,7 +1,9 @@
 .tmp
 coverage
 dist
+demo
+config
+test
 es
-lib
 node_modules
 reports
