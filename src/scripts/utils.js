@@ -143,7 +143,7 @@ export function getOffsetBoundingClientRect(element, offsetParent) {
 
   return {
     top: offsetTop,
-    left: offsetLeft,
+    left: offsetLeft + document.documentElement.scrollLeft,
     right: offsetRight,
     bottom: offsetBottom,
     x: offsetLeft,
