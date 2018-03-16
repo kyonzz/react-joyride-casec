@@ -785,14 +785,14 @@ class Joyride extends React.Component {
     let hasSteps;
 
     if (shouldRenderTooltip) {
-      if ([32, 38, 40].indexOf(intKey) > -1) {
+      if ([38, 40].indexOf(intKey) > -1) {
         e.preventDefault();
       }
 
       if (intKey === 27) {
         this.toggleTooltip({ show: false, index: index + 1, action: 'esc' });
       }
-      else if ([13, 32].indexOf(intKey) > -1) {
+      else if ([13].indexOf(intKey) > -1) {
         hasSteps = Boolean(steps[index + 1]);
         this.toggleTooltip({ show: hasSteps, index: index + 1, action: 'next' });
       }
