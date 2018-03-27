@@ -736,7 +736,8 @@ class Joyride extends React.Component {
     }
 
     const rect = getOffsetBoundingClientRect(target, offsetParent);
-    const targetTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
+    const customScrollTop =  document.querySelector('#mCSB_3_dragger_vertical').style ? document.querySelector('#mCSB_3_dragger_vertical').style.top : 0
+    const targetTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop || customScrollTop);
     const position = this.calcPosition(step);
     let scrollTo = 0;
 
@@ -988,16 +989,17 @@ class Joyride extends React.Component {
       const scrollTop = step.isFixed === true ? 0 : scrollingElement.top;
       const component = this.getElementDimensions();
       const rect = getOffsetBoundingClientRect(target, offsetParent);
+      const customScrollLeft =  document.querySelector('#mCSB_3_dragger_horizontal').style ? document.querySelector('#mCSB_3_dragger_horizontal').style.top : 0
 
       // Calculate x position
       if (/^left/.test(position)) {
-        placement.x = rect.left - (displayTooltip ? component.width + tooltipOffset : (component.width / 2) + offsetX);
+        placement.x = rect.left + customScrollLeft - (displayTooltip ? component.width + tooltipOffset : (component.width / 2) + offsetX);
       }
       else if (/^right/.test(position)) {
-        placement.x = (rect.left + rect.width) - (displayTooltip ? -tooltipOffset : (component.width / 2) - offsetX);
+        placement.x = (rect.left + customScrollLeft + rect.width) - (displayTooltip ? -tooltipOffset : (component.width / 2) - offsetX);
       }
       else {
-        placement.x = rect.left + ((rect.width / 2) - (component.width / 2));
+        placement.x = rect.left + customScrollLeft + ((rect.width / 2) - (component.width / 2));
       }
 
       // Calculate y position
