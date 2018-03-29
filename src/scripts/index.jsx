@@ -730,19 +730,14 @@ class Joyride extends React.Component {
     const step = steps[index];
     const target = this.getStepTargetElement(step);
     const offsetParent = document.querySelector(sanitizeSelector(offsetParentSelector));
-    if (!target) return;
+
+    if (!target) {
+      return 0;
+    }
+
     const rect = getOffsetBoundingClientRect(target, offsetParent);
     const targetTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
-    let scrollTo = 0;
-
-    /* istanbul ignore else */
-    // if (/^top/.test(position)) {
-    //   scrollTo = Math.floor(yPos - scrollOffset);
-    // }
-    // else if (/^bottom|^left|^right/.test(position)) {
-    //   scrollTo = Math.floor(targetTop - scrollOffset);
-    // }
-    scrollTo = Math.floor(targetTop - scrollOffset);
+    let scrollTo = scrollTo = Math.floor(targetTop - scrollOffset);
 
     return scrollTo;
   }
@@ -1149,7 +1144,7 @@ class Joyride extends React.Component {
       type: `joyride:createComponent${this.getRenderStage()}`,
       msg: [
         'component:', shouldRenderTooltip || standaloneData ? 'Tooltip' : 'Beacon',
-        'animate:', xPos > -1 && shouldRedraw,
+        'animate:', xPos > -1 && !shouldRedraw,
         'step:', step
       ],
       debug: this.props.debug,
