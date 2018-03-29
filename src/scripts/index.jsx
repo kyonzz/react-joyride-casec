@@ -83,7 +83,7 @@ class Joyride extends React.Component {
     autoStart: false,
     debug: false,
     disableOverlay: false,
-    holePadding: 5,
+    holePadding: 0,
     keyboardNavigation: true,
     locale: {
       back: 'Back',
@@ -1008,22 +1008,22 @@ class Joyride extends React.Component {
         placement.x = ((clientWidth / 2) - (popupWidth / 2)) + scrollLeft;
         placement.y = ((clientHeight / 2) - 90) + scrollTop;
       } else if (/^rd_popup2/.test(steps[index].casecClass)) {
-        placement.x = rect.left - 15;
-        placement.y = rect.top + rect.height + 10;
+        placement.x = rect.left;
+        placement.y = rect.top + rect.height;
       } else if (/^rd_popup3/.test(steps[index].casecClass)) {
-        placement.x = rect.left - 15;
+        placement.x = rect.left;
         placement.y = rect.top - popupHeight - paddingPopup;
       } else if (/^abs_left/.test(steps[index].casecClass)) {
-        placement.x = rect.left - (popupWidth - rect.width);
-        placement.y = rect.top - popupHeight - paddingPopup - 10;
+        placement.x = rect.left - (popupWidth - rect.width) + 15;
+        placement.y = rect.top - popupHeight - paddingPopup;
       } else if (/^abs_top/.test(steps[index].casecClass)) {
         placement.x = rect.left - (popupWidth - rect.width - 10);
-        placement.y = rect.top + rect.height + paddingPopup + 10;
+        placement.y = rect.top + rect.height + paddingPopup;
       } else if (/^sp_top/.test(steps[index].casecClass)) {
         placement.x = rect.left - ((popupWidth - rect.width) / 2);
         placement.y = rect.top + rect.height;
       } else if (/^wt_pd3/.test(steps[index].casecClass)) {
-        placement.x = rect.left - 5;
+        placement.x = rect.left - 20;
         placement.y = rect.top + rect.height + paddingPopup;
       } else if (/^abs_wt/.test(steps[index].casecClass)) {
         placement.x = rect.left - (popupWidth - rect.width - 20);
