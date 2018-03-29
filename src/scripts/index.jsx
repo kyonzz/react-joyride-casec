@@ -730,26 +730,38 @@ class Joyride extends React.Component {
     const step = steps[index];
     const target = this.getStepTargetElement(step);
     const offsetParent = document.querySelector(sanitizeSelector(offsetParentSelector));
-
-    if (!target) {
-      return 0;
-    }
-
+    if (!target) return;
     const rect = getOffsetBoundingClientRect(target, offsetParent);
-    const customScrollTop =  document.querySelector('#mCSB_3_dragger_vertical').style ? document.querySelector('#mCSB_3_dragger_vertical').style.top : 0
-    const targetTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop || customScrollTop);
-    const position = this.calcPosition(step);
+    const targetTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
     let scrollTo = 0;
 
     /* istanbul ignore else */
-    if (/^top/.test(position)) {
-      scrollTo = Math.floor(yPos - scrollOffset);
-    }
-    else if (/^bottom|^left|^right/.test(position)) {
-      scrollTo = Math.floor(targetTop - scrollOffset);
-    }
+    // if (/^top/.test(position)) {
+    //   scrollTo = Math.floor(yPos - scrollOffset);
+    // }
+    // else if (/^bottom|^left|^right/.test(position)) {
+    //   scrollTo = Math.floor(targetTop - scrollOffset);
+    // }
+    scrollTo = Math.floor(targetTop - scrollOffset);
 
     return scrollTo;
+  }
+
+  /**
+   * Get the scrollLeft position
+   *
+   * @private
+   * @returns {number}
+   */
+  getScrollLeft(baseLeftPostition) { // get offset X of hole
+    const { index } = this.state;
+    const { offsetParentSelector, steps } = this.props;
+    const step = steps[index];
+    const target = this.getStepTargetElement(step);
+    const offsetParent = document.querySelector(sanitizeSelector(offsetParentSelector));
+    if (!target) return 0;
+    const rect = getOffsetBoundingClientRect(target, offsetParent);
+    return rect.left - baseLeftPostition;
   }
 
   /**
@@ -863,6 +875,7 @@ class Joyride extends React.Component {
    * @param {Event} e - Click event
    */
   handleClickTooltip = (e) => {
+    window.$('#scroll_common').mCustomScrollbar('scrollTo', 'first', {})
     const { index, shouldRun } = this.state;
     const { steps, type } = this.props;
     const el = e.currentTarget.className.includes('joyride-') && [
@@ -957,12 +970,10 @@ class Joyride extends React.Component {
    * @private
    */
   calcPlacement() {
-    const { index, isRunning, standaloneData, shouldRenderTooltip } = this.state;
-    const { offsetParentSelector, steps, tooltipOffset } = this.props;
+    const { index, isRunning, standaloneData } = this.state;
+    const { steps, offsetParentSelector } = this.props;
     const step = standaloneData || (steps[index] || {});
-    const displayTooltip = standaloneData ? true : shouldRenderTooltip;
     const target = this.getStepTargetElement(step);
-    const offsetParent = document.querySelector(sanitizeSelector(offsetParentSelector));
 
     logger({
       type: `joyride:calcPlacement${this.getRenderStage()}`,
@@ -982,51 +993,55 @@ class Joyride extends React.Component {
 
     /* istanbul ignore else */
     if (step && (standaloneData || (isRunning && steps[index]))) {
-      const offsetX = nested.get(step, 'style.beacon.offsetX') || 0;
-      const offsetY = nested.get(step, 'style.beacon.offsetY') || 0;
-      const position = this.calcPosition(step);
-      const scrollingElement = getRootEl().getBoundingClientRect();
-      const scrollTop = step.isFixed === true ? 0 : scrollingElement.top;
-      const component = this.getElementDimensions();
+      const clientWidth = Math.max(document.body.clientWidth, 1280);
+      const clientHeight = Math.max(document.body.clientHeight, 768);
+      const isVirtualTarget = /^.tour-guide__placehold/.test(steps[index].selector);
+      const scrollTop = isVirtualTarget ? 0 : (this.getScrollTop() - 85);
+      const offsetParent = document.querySelector(sanitizeSelector(offsetParentSelector));
+      if (!target) return;
       const rect = getOffsetBoundingClientRect(target, offsetParent);
-      const customScrollLeft =  document.querySelector('#mCSB_3_dragger_horizontal').style ? document.querySelector('#mCSB_3_dragger_horizontal').style.top : 0
+      const popupHeight = 200;
+      const popupWidth = 610;
+      const paddingPopup = 20;
 
-      // Calculate x position
-      if (/^left/.test(position)) {
-        placement.x = rect.left + customScrollLeft - (displayTooltip ? component.width + tooltipOffset : (component.width / 2) + offsetX);
-      }
-      else if (/^right/.test(position)) {
-        placement.x = (rect.left + customScrollLeft + rect.width) - (displayTooltip ? -tooltipOffset : (component.width / 2) - offsetX);
-      }
-      else {
-        placement.x = rect.left + customScrollLeft + ((rect.width / 2) - (component.width / 2));
-      }
-
-      // Calculate y position
-      if (/^top/.test(position)) {
-        placement.y = (rect.top - scrollTop) - (displayTooltip ? component.height + tooltipOffset : (component.height / 2) + offsetY);
-      }
-      else if (/^bottom/.test(position)) {
-        placement.y = (rect.top - scrollTop) + (rect.height - (displayTooltip ? -tooltipOffset : (component.height / 2) - offsetY));
-      }
-      else {
-        placement.y = (rect.top - scrollTop);
-      }
-
-      /* istanbul ignore else */
-      if (/^bottom|^top/.test(position)) {
-        if (/left/.test(position)) {
-          placement.x = rect.left - (displayTooltip ? tooltipOffset : component.width / 2);
-        }
-        else if (/right/.test(position)) {
-          placement.x = rect.left + (rect.width - (displayTooltip ? component.width - tooltipOffset : component.width / 2));
-        }
+      if (/^ls_pd2/.test(steps[index].casecClass)) {
+        const scrollLeft = isVirtualTarget ? 0 : this.getScrollLeft((clientWidth / 2) + 10);
+        placement.x = ((clientWidth - 1260) / 2) + 10 + scrollLeft;
+        placement.y = (0.4 * clientHeight) + scrollTop;
+      } else if (/^center/.test(steps[index].casecClass)) {
+        const scrollLeft = isVirtualTarget ? 0 : this.getScrollLeft(((clientWidth - 1260) / 2) + 10);
+        placement.x = ((clientWidth / 2) - (popupWidth / 2)) + scrollLeft;
+        placement.y = ((clientHeight / 2) - 90) + scrollTop;
+      } else if (/^rd_popup2/.test(steps[index].casecClass)) {
+        placement.x = rect.left - 15;
+        placement.y = rect.top + rect.height + 10;
+      } else if (/^rd_popup3/.test(steps[index].casecClass)) {
+        placement.x = rect.left - 15;
+        placement.y = rect.top - popupHeight - paddingPopup;
+      } else if (/^abs_left/.test(steps[index].casecClass)) {
+        placement.x = rect.left - (popupWidth - rect.width);
+        placement.y = rect.top - popupHeight - paddingPopup - 10;
+      } else if (/^abs_top/.test(steps[index].casecClass)) {
+        placement.x = rect.left - (popupWidth - rect.width - 10);
+        placement.y = rect.top + rect.height + paddingPopup + 10;
+      } else if (/^sp_top/.test(steps[index].casecClass)) {
+        placement.x = rect.left - ((popupWidth - rect.width) / 2);
+        placement.y = rect.top + rect.height;
+      } else if (/^wt_pd3/.test(steps[index].casecClass)) {
+        placement.x = rect.left - 5;
+        placement.y = rect.top + rect.height + paddingPopup;
+      } else if (/^abs_wt/.test(steps[index].casecClass)) {
+        placement.x = rect.left - (popupWidth - rect.width - 20);
+        placement.y = rect.top + rect.height + paddingPopup;
+      } else if (/^wt_st2/.test(steps[index].casecClass)) {
+        placement.x = rect.left - (popupWidth + 20);
+        placement.y = rect.top + ((rect.height - popupHeight) / 2);
       }
 
       this.setState({
         shouldRedraw: false,
-        xPos: this.preventWindowOverflow(Math.ceil(placement.x), 'x', component.width, component.height),
-        yPos: this.preventWindowOverflow(Math.ceil(placement.y), 'y', component.width, component.height)
+        xPos: placement.x,
+        yPos: placement.y
       });
     }
   }
@@ -1040,42 +1055,7 @@ class Joyride extends React.Component {
    * @returns {string}
    */
   calcPosition(step) {
-    const { offsetParentSelector, tooltipOffset } = this.props;
-    const scrollingElement = getRootEl();
-    const scrollingElementRect = scrollingElement.getBoundingClientRect();
-    const target = this.getStepTargetElement(step);
-    const offsetParent = document.querySelector(sanitizeSelector(offsetParentSelector));
-    const rect = getOffsetBoundingClientRect(target, offsetParent);
-    const { height, width = DEFAULTS.minWidth } = this.getElementDimensions();
-    let position = step.position || DEFAULTS.position;
-
-    if (/^left/.test(position) && rect.left - (width + tooltipOffset) < 0) {
-      position = 'top';
-    }
-    else if (/^right/.test(position) && (rect.left + rect.width + (width + tooltipOffset)) > scrollingElementRect.width) {
-      position = 'bottom';
-    }
-
-    if (
-      /^top/.test(position) &&
-      (
-        ((rect.top + scrollingElement.scrollTop) - (height + tooltipOffset) < 0) ||
-        (step.isFixed && rect.top - height < 0)
-      )
-    ) {
-      position = 'bottom';
-    }
-    else if (
-      /^bottom/.test(position) &&
-      (
-        (rect.top + scrollingElement.scrollTop) + (height + tooltipOffset) > getDocHeight() ||
-        (step.isFixed && rect.top + rect.height + height > scrollingElementRect.height)
-      )
-    ) {
-      position = 'top';
-    }
-
-    return position;
+    return step.position || DEFAULTS.position;
   }
 
   /**
@@ -1169,7 +1149,7 @@ class Joyride extends React.Component {
       type: `joyride:createComponent${this.getRenderStage()}`,
       msg: [
         'component:', shouldRenderTooltip || standaloneData ? 'Tooltip' : 'Beacon',
-        'animate:', xPos > -1 && !shouldRedraw,
+        'animate:', xPos > -1 && shouldRedraw,
         'step:', step
       ],
       debug: this.props.debug,
@@ -1217,7 +1197,7 @@ class Joyride extends React.Component {
 
       component = React.createElement(Tooltip, {
         allowClicksThruHole,
-        animate: xPos > -1 && !shouldRedraw,
+        animate: xPos > -1000 && !shouldRedraw,
         buttons,
         disableOverlay,
         holePadding,
