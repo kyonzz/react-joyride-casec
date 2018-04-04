@@ -870,7 +870,6 @@ class Joyride extends React.Component {
    * @param {Event} e - Click event
    */
   handleClickTooltip = (e) => {
-    window.$('#scroll_common').mCustomScrollbar('scrollTo', 'first', {})
     const { index, shouldRun } = this.state;
     const { steps, type } = this.props;
     const el = e.currentTarget.className.includes('joyride-') && [
