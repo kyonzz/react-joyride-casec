@@ -992,15 +992,14 @@ class Joyride extends React.Component {
       const popupHeight = 200;
       const popupWidth = 610;
       const paddingPopup = 20;
-
+      const supperButtonBounding = document.querySelector('#super-button').getBoundingClientRect();
       if (/^ls_pd2/.test(steps[index].casecClass)) {
         const scrollLeft = isVirtualTarget ? 0 : this.getScrollLeft((clientWidth / 2) + 10);
         placement.x = ((clientWidth - 1260) / 2) + 10 + scrollLeft;
         placement.y = (0.4 * clientHeight) + scrollTop;
       } else if (/^center/.test(steps[index].casecClass)) {
-        const scrollLeft = isVirtualTarget ? 0 : this.getScrollLeft(((clientWidth - 1260) / 2) + 10);
-        placement.x = ((clientWidth / 2) - (popupWidth / 2)) + scrollLeft;
-        placement.y = ((clientHeight / 2) - 90) + scrollTop;
+        placement.x = (supperButtonBounding.right - (1240 / 2) - (popupWidth / 2));
+        placement.y = ((Math.max(clientHeight, 900) / 2) - popupHeight) + supperButtonBounding.top;
       } else if (/^rd_popup2/.test(steps[index].casecClass)) {
         placement.x = rect.left;
         placement.y = rect.top + rect.height;
