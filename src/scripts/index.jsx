@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import scroll from 'scroll';
-import nested from 'nested-property';
 import { getRootEl, getOffsetBoundingClientRect, logger, sanitizeSelector, getDocHeight } from './utils';
 
 import Beacon from './Beacon';
@@ -74,7 +73,6 @@ class Joyride extends React.Component {
     showStepsProgress: PropTypes.bool,
     stepIndex: PropTypes.number,
     steps: PropTypes.array,
-    tooltipOffset: PropTypes.number,
     type: PropTypes.string
   };
 
@@ -105,7 +103,6 @@ class Joyride extends React.Component {
     showStepsProgress: false,
     stepIndex: 0,
     steps: [],
-    tooltipOffset: 15,
     type: 'single'
   };
 
@@ -725,7 +722,7 @@ class Joyride extends React.Component {
    * @returns {number}
    */
   getScrollTop() {
-    const { index, yPos } = this.state;
+    const { index } = this.state;
     const { offsetParentSelector, scrollOffset, steps } = this.props;
     const step = steps[index];
     const target = this.getStepTargetElement(step);
@@ -737,9 +734,7 @@ class Joyride extends React.Component {
 
     const rect = getOffsetBoundingClientRect(target, offsetParent);
     const targetTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
-    let scrollTo = scrollTo = Math.floor(targetTop - scrollOffset);
-
-    return scrollTo;
+    return Math.floor(targetTop - scrollOffset);
   }
 
   /**
@@ -1013,7 +1008,7 @@ class Joyride extends React.Component {
         placement.x = rect.left;
         placement.y = rect.top - popupHeight - paddingPopup;
       } else if (/^abs_left/.test(steps[index].casecClass)) {
-        placement.x = rect.left - (popupWidth - rect.width) + 15;
+        placement.x = rect.left - ((popupWidth - rect.width) + 15);
         placement.y = rect.top - popupHeight - paddingPopup;
       } else if (/^abs_top/.test(steps[index].casecClass)) {
         placement.x = rect.left - (popupWidth - rect.width - 10);
