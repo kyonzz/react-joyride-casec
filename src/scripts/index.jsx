@@ -796,8 +796,7 @@ class Joyride extends React.Component {
         this.toggleTooltip({ show: false, index: index + 1, action: 'esc' });
       }
       else if ([13].indexOf(intKey) > -1) {
-        hasSteps = Boolean(steps[index + 1]);
-        this.toggleTooltip({ show: hasSteps, index: index + 1, action: 'next' });
+        document.getElementById('next_button_joyride').click();
       }
     }
   };

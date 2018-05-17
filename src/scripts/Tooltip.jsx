@@ -505,7 +505,7 @@ export default class JoyrideTooltip extends React.Component {
             className="joyride-tooltip__button joyride-tooltip__button--primary"
             style={styles.buttons.primary}
             data-type={['single', 'casual'].indexOf(type) > -1 ? 'close' : 'next'}
-            onClick={onClick}>
+            onClick={(e) => { onClick(e); document.getElementById('next_button_joyride').blur(); }}>
             {buttons.primary}
           </button>
         </div>
