@@ -470,6 +470,7 @@ export default class JoyrideTooltip extends React.Component {
     if (buttons.secondary) {
       output.secondary = (
         <button
+          id="back_button_joyride"
           className="joyride-tooltip__button joyride-tooltip__button--secondary"
           style={styles.buttons.back}
           data-type="back"
@@ -505,7 +506,7 @@ export default class JoyrideTooltip extends React.Component {
             className="joyride-tooltip__button joyride-tooltip__button--primary"
             style={styles.buttons.primary}
             data-type={['single', 'casual'].indexOf(type) > -1 ? 'close' : 'next'}
-            onClick={(e) => { onClick(e); document.getElementById('next_button_joyride').blur(); }}>
+            onClick={(e) => { onClick(e); if (document.getElementById('back_button_joyride')) document.getElementById('back_button_joyride').blur(); document.getElementById('next_button_joyride').blur(); }}>
             {buttons.primary}
           </button>
         </div>
