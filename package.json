@@ -1,7 +1,7 @@
 {
-  "name": "react-joyride",
-  "version": "1.11.1",
-  "description": "Create walkthroughs and guided tours for your apps",
+  "name": "react-joyride-casec",
+  "version": "1.0.0",
+  "description": "An costumized react-joyride package for casec app",
   "author": "Gil Barbara <gilbarbara@gmail.com>",
   "repository": {
     "type": "git",
