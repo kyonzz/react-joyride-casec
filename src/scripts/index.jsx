@@ -796,7 +796,11 @@ class Joyride extends React.Component {
         this.toggleTooltip({ show: false, index: index + 1, action: 'esc' });
       }
       else if ([13].indexOf(intKey) > -1) {
-        document.getElementById('next_button_joyride').click();
+        const currentStep = steps[index]
+        if(!(currentStep.selector === '.textarea' || currentStep.selector === '.textarea-box')) {
+            e.preventDefault()
+            document.getElementById('next_button_joyride').click();
+        }
       }
     }
   };
@@ -1017,6 +1021,9 @@ class Joyride extends React.Component {
       } else if (/^wt_pd3/.test(steps[index].casecClass)) {
         placement.x = rect.left - 20;
         placement.y = rect.top + rect.height + paddingPopup;
+      } else if (/^wt_pd4/.test(steps[index].casecClass)) {
+        placement.x = rect.left - popupWidth - 2 * paddingPopup;
+        placement.y = rect.top - paddingPopup;
       } else if (/^abs_wt/.test(steps[index].casecClass)) {
         placement.x = rect.left - (popupWidth - rect.width - 20);
         placement.y = rect.top + rect.height + paddingPopup;

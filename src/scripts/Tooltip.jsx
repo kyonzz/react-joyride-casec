@@ -503,6 +503,7 @@ export default class JoyrideTooltip extends React.Component {
           {output.skip}
           {output.secondary}
           <button
+            id="next_button_joyride"
             className="joyride-tooltip__button joyride-tooltip__button--primary"
             style={styles.buttons.primary}
             data-type={['single', 'casual'].indexOf(type) > -1 ? 'close' : 'next'}
